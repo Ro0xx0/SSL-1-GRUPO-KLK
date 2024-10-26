@@ -11,3 +11,8 @@ Scanner para el lenguaje Micro como está definido en el libro del profesor Much
 ## Diagrama de transición
 
 ## Qué cambios hicimos y por qué
+
+- Lo primero que hicimos fue redefinir el Token en el scanner.h con enum para que cada Token tenga un número asignado
+- Completamos LimpiarBuffer (para que el residuo de una cadena no pise a otra cadena) 
+  EsReservada (para discriminar el caso en el que la cadena es una palabra reservada)
+  Y la tabla de transiciones que define al AFD 

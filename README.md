@@ -7,7 +7,8 @@ Scanner para el lenguaje Micro como está definido en el libro del profesor Much
 ## Instrucciones para compilar
  mingw32-make 
 ## Instrucciones para probar
- mingw32-make test
+ - cd a la carpeta scanner, donde esta el Makefile  
+ - mingw32-make test
 ## Diagrama de transición
 
 ## Qué cambios hicimos y por qué

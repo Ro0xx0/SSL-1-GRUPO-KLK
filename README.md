@@ -21,7 +21,7 @@ Scanner para el lenguaje Micro como está definido en el libro del profesor Much
  - cd a la carpeta scanner, donde esta el Makefile  
  - mingw32-make test
 
-## Diagrama de transición
+## Diagrama de transiciones
 ![AutomataFinito](TT.png)
 
 ## Qué cambios hicimos y por qué

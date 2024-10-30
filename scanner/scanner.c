@@ -1,7 +1,8 @@
+#include "scanner.h"
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "scanner.h"
+
 
 #define TAMANIO_BUFFER 20
 
@@ -11,11 +12,8 @@ char _buffer[TAMANIO_BUFFER+1];
 int  _pos = 0;
 
 void LimpiarBuffer(void) {
-    int c;
-    while ((c= getchar()) != '\n' && c != EOF) { 
-        _buffer[_pos] = '\0';
-        _pos++;
-    }
+    _pos = 0;  // Reinicia la posición para el próximo token.
+    _buffer[0] = '\0';  // Limpia el primer carácter para asegurar que el buffer esté vacío.
 }
 
 void AgregarCaracter(int caracter) {
@@ -62,10 +60,10 @@ ESTADO Transicion(ESTADO estado, int simbolo) {
     static ESTADO TT[15][13] = {
     // 0   1   2   3   4   5   6   7   8   9  10   11  12 //
     // L   D   +   -   (   )   ,   ;   :   =  fdt  sp otro
-    {  1,  3,  5,  6,  7,  8,  9, 10, 11, 14, 13,  0, 99 }, // Estado 0-
-    {  1,  1,  2,  2,  2,  2,  2,  2,  2,  2,  2, 99,  2 }, // Estado 1
+    {  1,  3,  5,  6,  7,  8,  9, 10, 11, 14, 13,  0, 14 }, // Estado 0-
+    {  1,  1,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 }, // Estado 1
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Estado 2+
-    {  3,  4,  3,  4,  4,  4,  4,  4,  4,  4,  4, 99,  4 }, // Estado 3
+    {  4,  3,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4 }, // Estado 3
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 4+
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 5+
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 6+
@@ -73,7 +71,7 @@ ESTADO Transicion(ESTADO estado, int simbolo) {
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 8+
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 9+
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 10+
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 12, 99, 99, 99 }, //Estado 11
+    { 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 14, 14, 14 }, //Estado 11
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 12+
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 13+
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 14
@@ -88,53 +86,52 @@ ESTADO Transicion(ESTADO estado, int simbolo) {
 
 TOKEN Scanner(void) {
     TOKEN token = 0;
-    int c, pos = 0;
+    int c;
     ESTADO estado = 0;
     LimpiarBuffer();
     while ((c = getchar()) != EOF) {
         estado = Transicion(estado, c);
-        switch(estado)
-        {
+        switch (estado) {
             case 1:
             case 3:
                 AgregarCaracter(c);
                 break;
             case 2:
-                Buffer();
                 ungetc(c, stdin);
                 token = EsReservada();
-                return token; /* ID */ //antes habia 4
+                return token; /* ID */
             case 4:
                 ungetc(c, stdin);
-                return 5; /* CONSTANTE */
+                return CONSTANTE; /* CONSTANTE */
             case 5:
                 AgregarCaracter(c);
-                return 11; /* SUMA */
+                return SUMA; /* SUMA */
             case 6:
                 AgregarCaracter(c);
-                return 12; /* RESTA */
+                return RESTA; /* RESTA */
             case 7:
                 AgregarCaracter(c);
-                return 6;  /* PARENIZQUIERDO */
+                return PARENIZQUIERDO; /* PARENIZQUIERDO */
             case 8:
                 AgregarCaracter(c);
-                return 7;  /* PARENDERECHO */
+                return PARENDERECHO; /* PARENDERECHO */
             case 9:
                 AgregarCaracter(c);
-                return 9;  /* COMA */
+                return COMA; /* COMA */
             case 10:
                 AgregarCaracter(c);
-                return 8;  /* PUNTOYCOMA */
+                return PUNTOYCOMA; /* PUNTOYCOMA */
             case 11:
                 AgregarCaracter(c);
                 break;
             case 12:
                 AgregarCaracter(c);
-                return 10; /* ASIGNACION */
+                return ASIGNACION; /* ASIGNACION */
             case 99:
-                return 13; // FDT
+                return FDT; // FDT
             case 13:
-                return 13; /* FDT */
+                return FDT; /* FDT */
         }
     }
+    return FDT;
 }

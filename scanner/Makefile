@@ -5,6 +5,7 @@ mmc: main.c scanner.h scanner.o
 	$(CC) -o mmc main.o scanner.o
 
 test: clean mmc
+	cmd /c "mmc < test.ok.micro"
 	cmd /c "mmc < test.error-lex.micro"
 
 clean:

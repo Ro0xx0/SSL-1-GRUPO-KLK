@@ -5,9 +5,9 @@ Scanner para el lenguaje Micro como está definido en el libro del profesor Much
 ## Integrantes del grupo
 
 ## Instrucciones para compilar
-
+ mingw32-make 
 ## Instrucciones para probar
-
+ mingw32-make test
 ## Diagrama de transición
 
 ## Qué cambios hicimos y por qué
@@ -17,4 +17,5 @@ Scanner para el lenguaje Micro como está definido en el libro del profesor Much
   EsReservada (para discriminar el caso en el que la cadena es una palabra reservada)
   Y la tabla de transiciones que define al AFD. Modificamos el archivo Makefile para que pueda correr en windows
   ya que la mayoria contamos con ese sistema operativo. En la funcion scanner agregamos que c = getchar() != EOF dentro 
-  del while para que no itere infinitamente. 
+  del while para que no itere infinitamente. Añadimos cmd /c "mmc < test.ok.micro" al Makefile en test: clean mmc para 
+  que corra el tes.ok.micro 

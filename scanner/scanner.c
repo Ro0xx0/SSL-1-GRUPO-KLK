@@ -5,6 +5,7 @@
 
 
 #define TAMANIO_BUFFER 20
+#define ERROR -1
 
 typedef int ESTADO;
 
@@ -79,6 +80,10 @@ ESTADO Transicion(ESTADO estado, int simbolo) {
     };
     
     int columna = ObtenerColumna(simbolo);
+    if (columna == 12) {  // Columna "otro" (no reconocido)
+        fprintf(stderr, "Error: simbolo no reconocido '%c'\n", simbolo);
+        return ERROR; // Devuelve un error
+    }
     return TT[estado][columna];
 }
 
@@ -91,6 +96,12 @@ TOKEN Scanner(void) {
     LimpiarBuffer();
     while ((c = getchar()) != EOF) {
         estado = Transicion(estado, c);
+        if (estado == ERROR) {
+            fprintf(stderr, "Error en el analisis lexico. Continuando...\n");
+            LimpiarBuffer(); 
+            estado = 0;  
+            continue;  
+        }
         switch (estado) {
             case 1:
             case 3:
@@ -102,35 +113,35 @@ TOKEN Scanner(void) {
                 return token; /* ID */
             case 4:
                 ungetc(c, stdin);
-                return CONSTANTE; /* CONSTANTE */
+                return CONSTANTE; 
             case 5:
                 AgregarCaracter(c);
-                return SUMA; /* SUMA */
+                return SUMA; 
             case 6:
                 AgregarCaracter(c);
-                return RESTA; /* RESTA */
+                return RESTA; 
             case 7:
                 AgregarCaracter(c);
-                return PARENIZQUIERDO; /* PARENIZQUIERDO */
+                return PARENIZQUIERDO; 
             case 8:
                 AgregarCaracter(c);
-                return PARENDERECHO; /* PARENDERECHO */
+                return PARENDERECHO; 
             case 9:
                 AgregarCaracter(c);
-                return COMA; /* COMA */
+                return COMA; 
             case 10:
                 AgregarCaracter(c);
-                return PUNTOYCOMA; /* PUNTOYCOMA */
+                return PUNTOYCOMA; 
             case 11:
                 AgregarCaracter(c);
                 break;
             case 12:
                 AgregarCaracter(c);
-                return ASIGNACION; /* ASIGNACION */
+                return ASIGNACION; 
             case 99:
-                return FDT; // FDT
+                return FDT; 
             case 13:
-                return FDT; /* FDT */
+                return FDT; 
         }
     }
     return FDT;

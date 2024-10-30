@@ -96,11 +96,11 @@ TOKEN Scanner(void) {
     LimpiarBuffer();
     while ((c = getchar()) != EOF) {
         estado = Transicion(estado, c);
-        if (estado == ERROR) {
+         if (estado == ERROR) {
             fprintf(stderr, "Error en el analisis lexico. Continuando...\n");
-            LimpiarBuffer(); 
-            estado = 0;  
-            continue;  
+            LimpiarBuffer();  // Limpia el buffer
+            estado = 0;       // Reinicia el estado
+            continue;         // Continua con el siguiente caracter
         }
         switch (estado) {
             case 1:
@@ -146,3 +146,4 @@ TOKEN Scanner(void) {
     }
     return FDT;
 }
+

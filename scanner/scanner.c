@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <ctype.h>
 #include "scanner.h"
 
@@ -27,7 +28,7 @@ const char *Buffer(void) {
 }
 
 TOKEN EsReservada(void) {
-    if(!strcmp(_buffer, "inicio") == 0) return INICIO;
+    if(strcmp(_buffer, "inicio") == 0) return INICIO;
     if (strcmp(_buffer, "fin") == 0) return FIN;
     if (strcmp(_buffer, "leer") == 0) return LEER;
     if (strcmp(_buffer, "escribir") == 0) return ESCRIBIR;
@@ -58,7 +59,7 @@ int ObtenerColumna(int simbolo) {
 }
 
 ESTADO Transicion(ESTADO estado, int simbolo) {
-    static ESTADO TT[12][13] = {
+    static ESTADO TT[15][13] = {
     // 0   1   2   3   4   5   6   7   8   9  10   11  12 //
     // L   D   +   -   (   )   ,   ;   :   =  fdt  sp otro
     {  1,  3,  5,  6,  7,  8,  9, 10, 11, 14, 13,  0, 99 }, // Estado 0-

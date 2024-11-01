@@ -65,29 +65,25 @@ ESTADO Transicion(ESTADO estado, int simbolo) {
     {  1,  1,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 }, // Estado 1
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Estado 2+
     {  4,  3,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4 }, // Estado 3
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 4+
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 5+
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 6+
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 7+
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 8+
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 9+
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 10+
-    { 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 14, 14, 14 }, //Estado 11
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 12+
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 13+
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, //Estado 14
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Estado 4+
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Estado 5+
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Estado 6+
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Estado 7+
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Estado 8+
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Estado 9+
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Estado 10+
+    { 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 14, 14, 14 }, // Estado 11
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Estado 12+
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Estado 13+
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Estado 14
 
     };
     
     int columna = ObtenerColumna(simbolo);
-    if (columna == 12) {  // Columna "otro" (no reconocido)
-        fprintf(stderr, "Error: simbolo no reconocido '%c'\n", simbolo);
+    if (columna == 12) // Columna "otro" (no reconocido)
         return ERROR; // Devuelve un error
-    }
     return TT[estado][columna];
 }
-
-
 
 TOKEN Scanner(void) {
     TOKEN token = 0;
@@ -97,6 +93,14 @@ TOKEN Scanner(void) {
     while ((c = getchar()) != EOF) {
         estado = Transicion(estado, c);
          if (estado == ERROR) {
+            if(_buffer[0] != '\0')
+            {
+                Buffer();
+                ungetc(c, stdin);
+                token = EsReservada(); //Revisar
+                return token; /* ID */
+            }
+            fprintf(stderr, "Error: simbolo no reconocido '%c'\n", c);
             fprintf(stderr, "Error en el analisis lexico. Continuando...\n");
             LimpiarBuffer();  // Limpia el buffer
             estado = 0;       // Reinicia el estado
@@ -108,6 +112,7 @@ TOKEN Scanner(void) {
                 AgregarCaracter(c);
                 break;
             case 2:
+                Buffer();
                 ungetc(c, stdin);
                 token = EsReservada();
                 return token; /* ID */
@@ -146,4 +151,3 @@ TOKEN Scanner(void) {
     }
     return FDT;
 }
-
